@@ -1,4 +1,4 @@
-; vim: ft=fasm
+; vim: ft=nasm
 
 ; ---------------------------------------------------------------------------
 ;Copyright (C) 2023 Stephan Strauss
@@ -52,6 +52,7 @@
 ; 'window' pointer), akin to '*window' in C.
 
 section .data
+
     windowTitle db 'SDL2 Window', 0
     window      dq 0                ; Pointer to the window
     renderer    dq 0              ; Pointer to the renderer
@@ -110,7 +111,10 @@ section .text
 ; in mind the security and structural implications of the executable formats.
 ; ----------------------------------------------------------------------------
 
-    extern SDL_Init, SDL_CreateWindow, SDL_CreateRenderer, SDL_SetRenderDrawColor, SDL_RenderFillRect, SDL_RenderPresent, SDL_Delay, SDL_DestroyRenderer, SDL_DestroyWindow, SDL_Quit
+    extern SDL_Init, SDL_CreateWindow, SDL_CreateRenderer
+    extern SDL_SetRenderDrawColor, SDL_RenderFillRect, SDL_RenderPresent
+    extern SDL_Delay, SDL_DestroyRenderer, SDL_DestroyWindow, SDL_Quit
+
     global _start
 
 _start:
@@ -239,7 +243,7 @@ _start:
 
     call SDL_RenderFillRect
 
-    add rsp, 16 ; Give up the entry on the stack for the rect
+    ;add rsp, 16 ; Give up the entry on the stack for the rect
 
     ; -------------------------------------------------------------------
     ; Render everything
@@ -254,7 +258,7 @@ _start:
 
     ; SDL_timer.h:147 extern DECLSPEC void SDLCALL SDL_Delay(Uint32 ms);
 
-    mov rdi, 20000         ; 20 sec
+    mov rdi, 7000         ; 7 sec 
     call SDL_Delay
 
     ; -------------------------------------------------------------------
