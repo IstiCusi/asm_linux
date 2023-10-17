@@ -56,7 +56,7 @@ Simple neovim function to add to your config.lua file for copying
 function declarations from headers to the asm files for easy reference,
 so that at the beginning of the copied string you find the file name,
 where the declaration was extracted and the linenumber in the following
-format <file>:<linenumber> Yanked Text
+format &lt;file&gt;:&lt;linenumber&gt; Yanked Text
 
 ## Future Work
 
