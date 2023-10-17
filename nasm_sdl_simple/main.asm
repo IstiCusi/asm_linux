@@ -43,8 +43,8 @@
 
 ; The prefix '.' signifies a section, so '.data' refers to the data section.
 
-; 'db' and 'dq' stand for 'define byte' and 'define quad word' (4 * 2 bytes), 
-; respectively.
+; 'db', 'dd' and 'dq' stand for 'define byte', 'define double word' and 
+; 'define quad word' (4 * 2 bytes), respectively.
 
 ; It's crucial to understand that 'windowTitle' is shorthand for 'WindowTitle:', 
 ; indicating it's merely a label representing an address. For instance, 'window' 
@@ -53,9 +53,17 @@
 
 section .data
 
-    windowTitle db 'SDL2 Window', 0
-    window      dq 0                ; Pointer to the window
-    renderer    dq 0              ; Pointer to the renderer
+    windowTitle  db 'SDL2 Window', 0
+    windowWidth  dd 640 ; 32 bit value
+    windowHeight dd 480 ; 32 bit value
+
+    window       dq 0 ; 64bit Pointer to the window
+    renderer     dq 0 ; 64bit Pointer to the renderer
+
+    rectX        dd 0 ; 32 bit value
+    rectY        dd 0 ; 32 bit value
+    rectWidth    dd 0 ; 32 bit value
+    rectHeight   dd 0 ; 32 bit value
 
 ; ----------------------------------------------------------------------------
 ; Text Section
@@ -115,7 +123,25 @@ section .text
     extern SDL_SetRenderDrawColor, SDL_RenderFillRect, SDL_RenderPresent
     extern SDL_Delay, SDL_DestroyRenderer, SDL_DestroyWindow, SDL_Quit
 
-    global _start
+    global _start, calc_rect
+
+calc_rect:
+
+    mov eax, 130              
+    mov [rectX], eax        
+    mov [rectY], eax
+
+    mov ecx, [windowWidth]
+    sub ecx, eax
+    sub ecx, eax
+    mov [rectWidth], ecx
+
+    mov ecx, [windowHeight]
+    sub ecx, eax
+    sub ecx, eax
+    mov [rectHeight], rcx
+
+    ret
 
 _start:
 
@@ -141,12 +167,12 @@ _start:
     ;                                               int h,
     ;                                               Uint32 flags);
 
-    mov rdi, windowTitle  ; Title string - pointer address
-    xor rsi, rsi          ; x -- Typical way to set to zero
-    xor rdx, rdx          ; y -- Typical way to set to zero
-    mov rcx, 640          ; width
-    mov r8, 480           ; height
-    xor r9, r9            ; flags = 0
+    mov rdi, windowTitle     ; Title string - pointer address
+    xor rsi, rsi             ; x -- Typical way to set to zero
+    xor rdx, rdx             ; y -- Typical way to set to zero
+    mov rcx, [windowWidth]   ; width
+    mov r8,  [windowHeight]  ; height
+    xor r9, r9               ; flags = 0
     call SDL_CreateWindow
     mov [window], rax     ; Save window pointer
 
@@ -228,12 +254,21 @@ _start:
     ; int SDL_RenderFillRect(SDL_Renderer * renderer,
     ;                        const SDL_Rect * rect);
 
+    call calc_rect
 
     sub rsp, 16      ; 4 x 4 ints (32 bit) 
-    mov dword [rsp]    , 50  
-    mov dword [rsp+4]  , 50 
-    mov dword [rsp+8]  , 400
-    mov dword [rsp+12] , 400
+
+    mov edi, [rectX]
+    mov [rsp]    , edi 
+
+    mov edi, [rectY]
+    mov [rsp+4]  , edi 
+
+    mov edi, [rectWidth]
+    mov [rsp+8]  , edi
+
+    mov edi, dword [rectHeight]
+    mov dword [rsp+12] , edi
 
     mov rdi, [renderer]
     mov rsi, rsp     ; Set rsi to address of the struct on the stack
