@@ -50,6 +50,14 @@ The `symtab` folder within `tools` contains `read_symtab` and `read_symtab.c` wh
 
 This program is useful for understanding the structure of ELF files and how symbols are stored and accessed in an ELF file.
 
+### Tag Copy
+
+Simple neovim function to add to your config.lua file for copying 
+function declarations from headers to the asm files for easy reference,
+so that at the beginning of the copied string you find the file name,
+where the declaration was extracted and the linenumber in the following
+format <file>:<linenumber> Yanked Text
+
 ## Future Work
 
 More examples and tools will be added to this repository to form a comprehensive course on assembly programming on Linux. Stay tuned for updates!
