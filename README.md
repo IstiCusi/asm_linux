@@ -18,6 +18,19 @@ This example demonstrates a simple, dependency-free C program designed for low-l
 
    - This function directly invokes the Linux `write` system call using inline assembly. It writes data to a specified file descriptor (`fd`), making it suitable for low-level output handling. The use of `syscall` avoids any standard library dependency.
 
+   swrite is a minimal C function that performs the Linux write system call directly
+   using inline assembly, without standard library dependencies. The function takes
+   three arguments: fd (file descriptor), buf (pointer to data), and
+   count (number of bytes to write). It sets up these parameters in registers using
+   the System V calling convention required for Linux syscalls on x86-64. Specifically,
+   rax is set to 1 (syscall number for write), rdi to fd, rsi to buf, and rdx to count.
+   The syscall instruction then invokes the kernel with these values. The asm volatile
+   directive prevents the compiler from optimizing out the assembly block. The lack of
+   output operands means this block has only side effects, with no returned values.
+   The clobber list (%rax, %rdi, %rsi, %rdx, and memory) warns the compiler that these
+   registers and memory may be altered (or “clobbered”) during execution, so it won’t
+   store critical data there before this operation.
+
 3. **Integer to ASCII Conversion (`itoa`)**:
 
    - Converts an integer to a string representation in the specified base (e.g., decimal or hexadecimal). This function supports negative numbers when using base 10.
