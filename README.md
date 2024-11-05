@@ -4,11 +4,41 @@ This repository contains various examples demonstrating assembler programming on
 
 ## Current Examples
 
+### Minimalist C Example as Preparation for Assembly Programming
+
+This example demonstrates a simple, dependency-free C program designed for low-level programming, focusing on core C features and direct system calls without standard library dependencies. It introduces basic functions for handling strings, integers, and direct output, which are helpful for transitioning to assembly language.
+
+#### Code Overview
+
+1. **String Length Calculation (`slength`)**:
+
+   - This function calculates the length of a C-string by counting characters until it reaches the null terminator.
+
+2. **Direct System Call for Writing (`swrite`)**:
+
+   - This function directly invokes the Linux `write` system call using inline assembly. It writes data to a specified file descriptor (`fd`), making it suitable for low-level output handling. The use of `syscall` avoids any standard library dependency.
+
+3. **Integer to ASCII Conversion (`itoa`)**:
+
+   - Converts an integer to a string representation in the specified base (e.g., decimal or hexadecimal). This function supports negative numbers when using base 10.
+
+4. **Simple Mathematical Function (`f`)**:
+
+   - A placeholder function (`f(x) = x * x`) to perform basic integer computation.
+
+5. **Program Execution (`main`)**:
+   - Calls `f(20)` to calculate the square of 20.
+   - Converts the result to a string using `itoa` and outputs it using `swrite`.
+   - Outputs a newline to the console.
+
+This minimalistic approach lays a foundation for understanding direct system calls and C fundamentals that will be useful when transitioning to assembly programming.
+
 ### Simple SDL Rectangle Drawing (nasm_sdl_simple)
 
 Located in the `nasm_sdl_simple` subfolder, this example includes a NASM source code file (`main.asm`) that demonstrates a simple application using the SDL library to draw a red rectangle on the screen. The `main.asm` file is thoroughly documented to provide newcomers with a smooth introduction to Linux assembly.
 
 #### Compilation
+
 To compile the `main.asm` to an executable, run the `compile.sh` script located in the same folder. This script performs the following tasks:
 
 1. Compiles `main.asm` to an object file (`main.o`) using NASM.
@@ -21,6 +51,7 @@ To compile the `main.asm` to an executable, run the `compile.sh` script located 
 The analysis results are logged into `sym_obj.log`, `sym_lin.log`, and `sym_exe.log` respectively.
 
 #### Execution
+
 Upon execution, the program follows these steps:
 
 1. Initializes SDL with video support.
@@ -45,6 +76,7 @@ Adjacent to the example subfolders at the root level, there is a `tools` folder 
 The `symtab` folder within `tools` contains `read_symtab` and `read_symtab.c` which provide functionality to read and analyze the symbol table generated from the assembly and linking process. The `read_symtab.c` program reads an ELF (Executable and Linkable Format) file, extracts, and prints the symbol table of the file. It demonstrates how to use the ELF header and section header table to locate the symbol table and the string table sections, and then how to read and print the symbols.
 
 #### Usage
+
 1. Compile the `read_symtab.c` source file.
 2. Run `read_symtab` with the ELF file as argument: `./read_symtab <elf_file>`.
 
@@ -52,7 +84,7 @@ This program is useful for understanding the structure of ELF files and how symb
 
 ### Tag Copy
 
-Simple neovim function to add to your config.lua file for copying 
+Simple neovim function to add to your config.lua file for copying
 function declarations from headers to the asm files for easy reference,
 so that at the beginning of the copied string you find the file name,
 where the declaration was extracted and the linenumber in the following
@@ -73,4 +105,3 @@ This project is open-source and available under the [MIT License](LICENSE).
 ## Author
 
 - [Stephan Strauss](https://github.com/IstiCusi)
-
